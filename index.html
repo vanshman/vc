@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>V2chatter</title>
+        <style>
+            nav{
+                background-color: rgb(128, 224, 246);
+                overflow: hidden;
+            }
+            body{
+                margin: 0;
+                padding: 0;
+            }
+            ul{
+                border: 2px solid black;
+                width: 900px;
+                font-size: 100px;
+            }
+            button{
+                height: 100px;
+                width: 100px;
+                font-size: 30px;
+                background-color: lightgreen;
+            }
+            button:hover{
+                animation: yo 2s infinite;
+            }
+            center input{
+                height: 100px;
+                width: 400px;
+                font-size: 40px;
+            }
+            nav input{
+                height: 50px;
+                width: 200px;
+                font-size: 40px;
+            }
+            p{
+                font-size: 60px;
+            }
+            #main{
+                font-family: cursive;
+            }
+            @keyframes yo{
+                0%{background-color: lightgreen;}
+                50%{
+                    background-color: rgb(23, 167, 23);
+                }
+                100%{
+                    background-color: lightgreen;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!--sign up and sign in and sign out start-->
+        <nav>
+            <center><p id="main">V2chatter</p></center>
+            <blockquote>-By Vansh Mohan</blockquote>
+            <a href="tc.html">Terms and condition</a>
+            <p>Sign up/in</p>
+            <input type="email" id="email"><br><br>
+            <input type="password" id="password"><br>
+            <button onclick="signup()">Sign Up</button>
+            <button onclick="signin()">Sign In</button>
+            <button onclick="signout()">Sign Out</button><button onclick="deletey()">Delete account</button><br><br><br>
+        </nav><br><br><br><br><br><br>
+        <!--sign up and sign in and sign out end-->
+        <!--main room creating/joining start-->
+        <center>
+            <input name="room_name" placeholder="Enter room name" id="room" type="text"><br><input name="room_password" placeholder="Enter room password" id="roomp" type="password"><br>
+            <input placeholder="Enter your message" id="message" type="text"><br>
+            <a onclick="email()" id="share" class="at-expanded-menu-email-btn"><button>Share room</button></a>
+            <button onclick="joinroom()">Join room</button>
+            <button onclick="post()">Send</button>
+            <!--main room creating/joining end-->
+            <!--place where messages comes start-->
+            <ul id="list"></ul>
+            <!--place where messages comes start-->
+        </center>
+        <script>
+            
+            document.onkeydown = function(e) {
+                if (e.ctrlKey && e.keyCode === 85) {
+                    return false;
+                }
+            };
+        </script> 
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-database.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-auth.js"></script>
+
+        <!-- TODO: Add SDKs for Firebase products that you want to use
+            https://firebase.google.com/docs/web/setup#available-libraries -->
+        <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-analytics.js"></script>
+
+        <script>
+            // Your web app's Firebase configuration
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+            var firebaseConfig = {
+                apiKey: "AIzaSyBJCY8zNC0svL4R0sTToJKK7g9nNfDXQr0",
+                authDomain: "bhgfgfg2gvjfghgfpbbbnbjhlefgh4.firebaseapp.com",
+                databaseURL: "https://bhgfgfg2gvjfghgfpbbbnbjhlefgh4-default-rtdb.firebaseio.com",
+                projectId: "bhgfgfg2gvjfghgfpbbbnbjhlefgh4",
+                storageBucket: "bhgfgfg2gvjfghgfpbbbnbjhlefgh4.appspot.com",
+                messagingSenderId: "1080844785466",
+                appId: "1:1080844785466:web:11dd60e43da494db1c2203",
+                measurementId: "G-ZYJW0TLWG9"
+            };
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            firebase.analytics();
+            const auth = firebase.auth();
+            const database = firebase.database();
+            var list = document.getElementById('list');
+            var myName = prompt("Enter your name");
+            if(myName == null){
+                alert("you need to enter your name")
+                myName = prompt("Enter your name");
+            }
+            //sign up
+            function signup(){
+                var email = document.getElementById("email").value;
+                var password = document.getElementById("password").value;
+
+                var promise = auth.createUserWithEmailAndPassword(email, password);
+                promise.catch(e => alert(e.message))
+                alert("Signed Up");
+            }
+            // sign in
+            function signin(){
+                var email = document.getElementById("email").value;
+                var password = document.getElementById("password").value;
+                var user = auth.currentUser;
+
+                var promise = auth.signInWithEmailAndPassword(email, password);
+                promise.catch(e => alert(e.message))
+                alert("Signed In");
+            }
+            // sign out
+            function signout(){
+                auth.signOut();
+                alert("Signed Out");
+            }
+            function deletex(self) {
+                var room = document.getElementById("room").value;
+                        // get message ID
+                        var messageId = self.getAttribute("data-id");
+                    
+                        // delete message
+                        firebase.database().ref(room).child(messageId).remove();
+                    
+            
+                    // attach listener for delete message
+                    firebase.database().ref(room).on("child_removed", function (snapshot) {
+                        // remove message node
+                        document.getElementById("message-" + snapshot.key).innerHTML = "This message has been removed";
+                    });
+                }
+            function deletey(){
+                var user = firebase.auth().currentUser;
+
+user.delete().then(function() {
+  alert("deleted account successfully");
+}).catch(function(error) {
+  // An error happened.
+});
+            }
+            function post(){
+                var user = firebase.auth().currentUser;
+                var roomp = document.getElementById("roomp").value;
+                var message = document.getElementById("message").value;
+                var room = document.getElementById("room").value;
+                firebase.database().ref(room).push().set({
+                    'sender': myName,
+                    'message': message,
+                    'password': roomp,
+                    'uid': user.uid
+                });
+            }
+            function joinroom(){
+                var user = firebase.auth().currentUser;
+                var room = document.getElementById("room").value;
+                var roomp = document.getElementById("roomp").value;
+                firebase.database().ref(room).on("child_added", function (snapshot) {
+                    if(roomp == snapshot.val().password){
+                    var html = "";
+                    // give each message a unique ID
+                    html += "<li id='message-" + snapshot.key + "'>";
+                    // show delete button if message is sent by me
+                    if (snapshot.val().uid == user.uid) {
+                        html += "<button data-id='" + snapshot.key + "' onclick='deletex(this);'>";
+                            html += "Delete";
+                        html += "</button>";
+                    }
+                    html += snapshot.val().sender + ": " + snapshot.val().message + "<br>";
+                    html += "</li>";
+            
+                    document.getElementById("list").innerHTML += html;
+                    function deletex(self) {
+                        // get message ID
+                        var messageId = self.getAttribute("data-id");
+                    
+                        // delete message
+                        firebase.database().ref(room).child(messageId).remove();
+                    }
+            
+                    // attach listener for delete message
+                    firebase.database().ref(room).on("child_removed", function (snapshot) {
+                        // remove message node
+                        document.getElementById("message-" + snapshot.key).innerHTML = "This message has been removed";
+                    });
+                }else{
+                    alert('incorrect password');
+                }
+                
+                });
+            }
+            function email(){
+            var room = document.getElementById("room");
+            var roomp = document.getElementById("roomp");
+            var share = document.getElementById("share");
+            share.href = "mailto:?subject=join%20my%20room%20to%20chat%20in%20v2chatter&body=Room%20name:%20" + room.value + "%20%20Room%20password:%20" + roomp.value;
+            }
+        </script>
+    </body>
+</html>
