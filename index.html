@@ -75,6 +75,9 @@
             <button onclick="post()">Send</button>
             <!--main room creating/joining end-->
             <!--place where messages comes start-->
+            <div id="here">
+            <ul id="rooms"></ul>
+            </div>
             <button onclick="document.getElementById('list').innerHTML = '';">Clear area</button>
             <ul id="list"></ul>
             <!--place where messages comes start-->
@@ -96,6 +99,7 @@
             https://firebase.google.com/docs/web/setup#available-libraries -->
         <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-analytics.js"></script>
 
+        
         <script>
             // Your web app's Firebase configuration
             // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -114,7 +118,10 @@
             firebase.analytics();
             const auth = firebase.auth();
             const database = firebase.database();
+            var blahblah = true;
             var list = document.getElementById('list');
+            var yoyo = true;
+            var tval;
             var myName = prompt("Enter your name");
             if(myName == null){
                 alert("you need to enter your name")
@@ -122,6 +129,8 @@
             }
             //sign up
             function signup(){
+                var user = auth.currentUser;
+                var room = document.getElementById("room").value;
                 var email = document.getElementById("email").value;
                 var password = document.getElementById("password").value;
 
@@ -129,6 +138,12 @@
                 promise.catch(e => alert(e.message))
                 alert("Signed Up");
             }
+            function short(selfx){
+                        document.getElementById("room").value = selfx.innerHTML;
+                        firebase.database().ref(selfx.innerHTML).on("child_added", function (snapshot) {
+                            document.getElementById("roomp").value = snapshot.val().password;
+                        });
+                    }
             // sign in
             function signin(){
                 var email = document.getElementById("email").value;
@@ -138,12 +153,41 @@
                 var promise = auth.signInWithEmailAndPassword(email, password);
                 promise.catch(e => alert(e.message))
                 alert("Signed In");
+                firebase.database().ref(user.uid).on("child_added", function (snapshot) {
+                    if(auth){
+                if(blahblah == true){
+                    var yo = "";
+                    if (snapshot.val().uid == user.uid) {
+                        yo += "<button data-id='" + snapshot.key + "' onclick='deletez(this);'>";
+                            yo += "Delete";
+                        yo += "</button>";
+                    }
+                    yo += "<li id='message-" + snapshot.key + "' onclick=short(this)>";
+                    yo += snapshot.val().room;
+                    yo += "</li>";
+                    document.getElementById("rooms").innerHTML += yo;
+                    tval = snapshot.val().room;
+                    }
+            }
+                });
             }
             // sign out
             function signout(){
                 auth.signOut();
                 alert("Signed Out");
             }
+            function deletez(selfy) {
+                var user = auth.currentUser;
+                var room = document.getElementById("room").value;
+                        // get message ID
+                        var messageId = selfy.getAttribute("data-id");
+                    
+                        // delete message
+                        firebase.database().ref(user.uid).child(messageId).remove();
+                    
+            
+                    alert("Room removed. Reload to see the change");
+                }
             function deletex(self) {
                 var room = document.getElementById("room").value;
                         // get message ID
@@ -179,12 +223,9 @@ user.delete().then(function() {
                     'password': roomp,
                     'uid': user.uid
                 });
-                
-                        if (snapshot.val().uid != user.uid) {
-                            alert("New Message");
-                        }
             }
             function joinroom(){
+                yoyo = true;
                 var user = firebase.auth().currentUser;
                 var room = document.getElementById("room").value;
                 var roomp = document.getElementById("roomp").value;
@@ -219,8 +260,16 @@ user.delete().then(function() {
                 }else{
                     alert('incorrect password');
                 }
-                
+            });
+                        if(yoyo == true){
+                        firebase.database().ref(user.uid).push().set({
+                        'room': room,
+                        'uid': user.uid
                 });
+                        blahblah = true;
+                        yoyo = false;
+            
+            }
             }
             function email(){
             var room = document.getElementById("room");
