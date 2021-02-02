@@ -199,9 +199,7 @@ user.delete().then(function() {
                     html += "</li>";
             
                     document.getElementById("list").innerHTML += html;
-                        if (snapshot.val().uid == user.uid) {
-                            alert("Message Sent");
-                        }else{
+                        if (snapshot.val().uid != user.uid) {
                             alert("New Message");
                         }
                     function deletex(self) {
