@@ -199,8 +199,10 @@ user.delete().then(function() {
                     html += "</li>";
             
                     document.getElementById("list").innerHTML += html;
+                        if(document.getElementById('list').innerHTML != ''){
                         if (snapshot.val().uid != user.uid) {
                             alert("New Message");
+                        }
                         }
                     function deletex(self) {
                         // get message ID
