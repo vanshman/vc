@@ -21,7 +21,6 @@
                 width: 100px;
                 font-size: 30px;
                 background-color: lightgreen;
-                margin: 80px;
             }
             button:hover{
                 animation: yo 2s infinite;
@@ -64,6 +63,9 @@
   top: 0px;
   z-index: 10px;
             }
+            #joinyo{
+                margin: 80px;
+            }
         </style>
     </head>
     <body>
@@ -85,7 +87,7 @@
             <input name="room_name" placeholder="Enter room name" id="room" type="text"><br><input name="room_password" placeholder="Enter room password" id="roomp" type="password"><br>
             <input placeholder="Enter your message" id="message" type="text"><br>
             <a onclick="email()" id="share" class="at-expanded-menu-email-btn"><button>Share room</button></a>
-            <button onclick="joinroom()">Join room</button>
+            <button id="joinyo" onclick="joinroom()">Join room</button>
             <button id="sendyo" onclick="post()">Send</button>
             <!--main room creating/joining end-->
             <!--place where messages comes start-->
