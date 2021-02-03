@@ -21,6 +21,7 @@
                 width: 100px;
                 font-size: 30px;
                 background-color: lightgreen;
+                margin: 80px;
             }
             button:hover{
                 animation: yo 2s infinite;
@@ -52,9 +53,16 @@
             }
             #message{
                 position: -webkit-sticky;
-                position: sticky;
-                top: 0px;
-                z-index: 10px;
+  position: sticky;
+  top: 0px;
+  z-index: 10px;
+  margin: 5px;
+            }
+            #sendyo{
+                position: -webkit-sticky;
+  position: sticky;
+  top: 0px;
+  z-index: 10px;
             }
         </style>
     </head>
@@ -78,7 +86,7 @@
             <input placeholder="Enter your message" id="message" type="text"><br>
             <a onclick="email()" id="share" class="at-expanded-menu-email-btn"><button>Share room</button></a>
             <button onclick="joinroom()">Join room</button>
-            <button onclick="post()">Send</button>
+            <button id="sendyo" onclick="post()">Send</button>
             <!--main room creating/joining end-->
             <!--place where messages comes start-->
             <div id="here">
