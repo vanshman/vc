@@ -256,6 +256,9 @@ user.delete().then(function() {
                     html += "</li>";
             
                     document.getElementById("list").innerHTML += html;
+                     if (snapshot.val().uid !== user.uid) {
+                        alert("New Message");
+                    }
                     function deletex(self) {
                         // get message ID
                         var messageId = self.getAttribute("data-id");
