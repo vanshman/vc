@@ -91,6 +91,7 @@
             </div>
             <button onclick="document.getElementById('list').innerHTML = '';">Clear area</button>
             <ul id="list"></ul>
+            <div id="bruv"></div>
             <input placeholder="Enter your message" id="message" type="text"><button id="sendyo" onclick="post()">Send</button>
             <!--place where messages comes start-->
         </center>
@@ -134,6 +135,7 @@
             var list = document.getElementById('list');
             var yoyo = true;
             var tval;
+            var notify = false;
             var myName = prompt("Enter your name");
             if(myName == null){
                 alert("you need to enter your name")
@@ -236,11 +238,15 @@ user.delete().then(function() {
                     'uid': user.uid,
                 });
             }
+            function notif(){
+                notify = true;
+            }
             function joinroom(){
                 yoyo = true;
                 var user = firebase.auth().currentUser;
                 var room = document.getElementById("room").value;
                 var roomp = document.getElementById("roomp").value;
+                document.getElementById("bruv").innerHTML = "<button onclick='notif()'>Notify on recieving message</button>";
                 firebase.database().ref(room).on("child_added", function (snapshot) {
                     if(roomp == snapshot.val().password){
                     var html = "";
@@ -257,7 +263,9 @@ user.delete().then(function() {
             
                     document.getElementById("list").innerHTML += html;
                      if (snapshot.val().uid !== user.uid) {
+                         if (notify === true){
                             alert("New Message");
+                         }
                     }
                     function deletex(self) {
                         // get message ID
