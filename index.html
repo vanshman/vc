@@ -128,9 +128,6 @@
             // Initialize Firebase
             firebase.initializeApp(firebaseConfig);
             firebase.analytics();
-            var d = new Date();
-            var n = d.getHours();
-            var e = d.getMinutes();
             const auth = firebase.auth();
             const database = firebase.database();
             var blahblah = true;
@@ -237,7 +234,6 @@ user.delete().then(function() {
                     'message': message,
                     'password': roomp,
                     'uid': user.uid,
-                    'time': n + ":" + e
                 });
             }
             function joinroom(){
@@ -256,14 +252,12 @@ user.delete().then(function() {
                             html += "Delete";
                         html += "</button>";
                     }
-                    html += snapshot.val().sender + ": " + snapshot.val().message + "<br><p style="text-align: right;">" + snapshot.val().time + "</p>";
+                    html += snapshot.val().sender + ": " + snapshot.val().message + "<br>";
                     html += "</li>";
             
                     document.getElementById("list").innerHTML += html;
                      if (snapshot.val().uid !== user.uid) {
-                         if(snapshot.val().time === n + ":" + e){
                             alert("New Message");
-                         }
                     }
                     function deletex(self) {
                         // get message ID
